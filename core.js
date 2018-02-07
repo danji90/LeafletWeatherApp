@@ -2,55 +2,58 @@ Google_key = "AIzaSyDQVpoQl_Qs9sX8mElHOOvWKK5_n8HKDFw";
 
 var OpenWeather_key = "1ca61d6cc6645d5d4e8c01f4bcdd3a6d";
 
-// var map = L.map('map').setView([39.984, -0.044], 13);
+function runApp() {
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      // If user allows device geolocation it will use the device coordinates
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
 
-//L.marker([39.990043, -0.033516]).addTo(map)
-//    .bindPopup('Wank!<br> Easily customizable.');
+      drawMap(lat, lng)
+    },
+    function(err) {
+      // If user rejects device geolocation it will use google API
+      var geoLocURL = "https://www.googleapis.com/geolocation/v1/geolocate?key=" + Google_key;
+      $.post(geoLocURL,
+        function(response) {
+          var lat = response.location.lat;
+          var lng = response.location.lng;
 
-// function onMapClick(e) {
-//     alert("You clicked the map at " + e.latlng);
-// }
-// map.on('click', onMapClick);
+          drawMap(lat, lng)
+        });
+    });
+}
 
-$.post("https://www.googleapis.com/geolocation/v1/geolocate?key="+Google_key,
-    function (response) {
-        //alert("Lat: "+response.location.lat+" Lon: "+response.location.lng);
-        var lat = response.location.lat;
-        var lng = response.location.lng;
-        var weatherStations = $.ajax({
-          url: "http://api.openweathermap.org/data/2.5/find?lat=" + lat + "&lon=" + lng + "&cnt=30&units=metric&APPID=" + OpenWeather_key,
-          dataType: "json",
-          async:false
-          }).done(function(data){
-            console.log(data);
-            
-            var markers = new L.MarkerClusterGroup();
-            var markerList = [];
-            for (var i = 0; i < weatherStations.length; i++) {
-              var a = weatherStations[i];
-              var marker = L.marker(L.latLng(a[0], a[1]))
-              .bindPopup('Wank!<br> Easily customizable.');
-              markerList.push(marker);
-            }
-          });
+function drawMap(lat, lng) {
+  var map = L.map('map').setView([lat, lng], 11);
 
-        var map = L.map('map').setView([lat, lng], 13);
+  L.tileLayer('https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
 
-        L.tileLayer('https://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey={apikey}', {
-            attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            apikey: 'a8ef5524faba413cb282ae1c706a44a7',
-            maxZoom: 22
-        }).addTo(map);
-      })
+  var weatherStations = $.ajax({
+    url: "http://api.openweathermap.org/data/2.5/find?lat=" + lat + "&lon=" + lng + "&cnt=30&units=metric&APPID=" + OpenWeather_key,
+    dataType: "json",
+    async: false
+  }).done(function(data) {
+    var locations = data.list;
 
-// var markers = new L.MarkerClusterGroup();
-// var markerList = [];
-// for (var i = 0; i < addressPoints.length; i++) {
-//     var a = addressPoints[i];
-//     var marker = L.marker(L.latLng(a[0], a[1]))
-//     .bindPopup('Wank!<br> Easily customizable.');
-//     markerList.push(marker);
-// }
-//
-// markers.addLayers(markerList);
-// map.addLayer(markers);
+    var markers = new L.MarkerClusterGroup();
+    var markerList = [];
+    for (var i = 0; i < locations.length; i++) {
+      var a = locations[i];
+      var marker = L.marker(L.latLng(a.coord.lat, a.coord.lon))
+        .bindPopup("<b>Station name: </b>" + a.name + "<br>" +
+          "<b>Temperature: </b>" + a.main.temp + "°C" + "<br>" +
+          "<b>Humidity: </b>" + a.main.humidity + "%" + "<br>" +
+          "<b>Pressure: </b>" + a.main.pressure + "hPa");
+      markerList.push(marker);
+    }
+    markers.addLayers(markerList);
+    map.addLayer(markers);
+  });
+
+};
+
+runApp()
