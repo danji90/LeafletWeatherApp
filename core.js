@@ -30,7 +30,7 @@ $(document).ready(function(){
 
 function createWeatherMap(lat,lng){
   var weatherStations = $.ajax({
-    url: "http://api.openweathermap.org/data/2.5/find?lat=" + lat + "&lon=" + lng + "&cnt=30&units=metric&APPID=" + OpenWeather_key,
+    url: "https://api.openweathermap.org/data/2.5/find?lat=" + lat + "&lon=" + lng + "&cnt=30&units=metric&APPID=" + OpenWeather_key,
     dataType: "json",
     async: false
   }).done(function(data) {
