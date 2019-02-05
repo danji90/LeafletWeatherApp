@@ -1,7 +1,7 @@
 # MeteoGeo
 
 ## Description
-This simple mobile application uses a user's location to load weather stations in the vicinity.
+This simple mobile application uses a user's location to load weather stations and weather station data in the vicinity.
 The user can choose to use the exact device location by allowing to use the current location when prompted. If rejected the app uses the Google Geolocation API to approximate the device location using the current network specifications.
 After geolocation the app loads data from the Weather API provided by OpenWeatherMap to access the closest stations.   
 The stations are visualised on a map and can be clicked for further information about stations and the phenomena they measure.
