@@ -7,10 +7,14 @@
   width: 100%;
   position: absolute;
   top: 40;
-  bottom: 0;
+  bottom: 40;
 }
 
 .footer{
   font-size: 12;
   text-align: center;
+}
+
+#header {
+    margin: 0.6em 10% 0.8em !important;
 }
