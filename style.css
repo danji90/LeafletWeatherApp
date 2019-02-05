@@ -1,7 +1,3 @@
-/* html, body {
-    height:100%;
-} */
-
 .map-section{
   height:600px;
   width:100%;
@@ -12,4 +8,9 @@
   position: absolute;
   top: 40;
   bottom: 0;
+}
+
+.footer{
+  font-size: 12;
+  text-align: center;
 }
