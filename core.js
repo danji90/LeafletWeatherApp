@@ -1,4 +1,6 @@
 $(document).ready(function(){
+  $("[data-role=header]").fixedtoolbar({})
+  $("[data-role=footer]").fixedtoolbar({})
   var location
   var Google_key = "AIzaSyDHWaUDzznLDy5iZd_wJiySK5ylyIoTU5A";
   var OpenWeather_key = "1ca61d6cc6645d5d4e8c01f4bcdd3a6d";
